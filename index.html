@@ -2,37 +2,64 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>音樂會座位表</title>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
   <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; }
-    .container { display: flex; flex-direction: column; align-items: center; }
-    .stage { font-size: 24px; font-weight: bold; margin-bottom: 20px; }
-    .seating-area {
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
       display: flex;
-      flex-wrap: nowrap;
-      gap: 30px;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #fff;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      max-width: 100%;
+      padding: 20px;
+    }
+    .stage {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    .scroll-wrapper {
       overflow-x: auto;
       width: 100%;
-      padding: 10px;
-      box-sizing: border-box;
+    }
+    .seating-area {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      width: max-content;
+      margin: 0 auto;
     }
     .section {
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-width: 220px;
-      flex-shrink: 0;
     }
-    .row { display: flex; gap: 5px; margin-bottom: 5px; }
+    .row {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 5px;
+    }
     .seat {
-      width: 50px; height: 50px;
-      background: #ddd; border-radius: 5px;
-      text-align: center; line-height: 50px;
-      cursor: pointer; position: relative;
+      width: 50px;
+      height: 50px;
+      background: #ddd;
+      border-radius: 5px;
+      text-align: center;
+      line-height: 50px;
+      cursor: pointer;
     }
     .selected { background: #4CAF50; color: white; }
     .reserved { background: red !important; color: white; cursor: not-allowed; }
@@ -54,10 +81,12 @@
   <h2>🎵 歡迎參加第 51 屆中正管樂音樂會 🎵</h2>
   <p>請選擇座位（每人最多選 4 個，前兩排中央為貴賓席）</p>
   <div class="stage">舞台</div>
-  <div class="seating-area">
-    <div class="section" id="left"></div>
-    <div class="section" id="center"></div>
-    <div class="section" id="right"></div>
+  <div class="scroll-wrapper">
+    <div class="seating-area">
+      <div class="section" id="left"></div>
+      <div class="section" id="center"></div>
+      <div class="section" id="right"></div>
+    </div>
   </div>
   <br />
   <div>
@@ -65,9 +94,7 @@
     <label>Email：</label><input type="email" id="email" required>
     <button onclick="submitReservation()">送出訂位</button>
     <br/><br/>
-    <div id="adminControl">
-      <button id="adminBtn" onclick="adminLogin()">管理員登入</button>
-    </div>
+    <button onclick="adminLogin()">管理員登入</button>
   </div>
   <div id="adminPanel">
     <h3>🔐 管理員專區：目前訂位明細</h3>
@@ -176,20 +203,12 @@
   }
 
   function adminLogin() {
-    if (!adminLoggedIn) {
-      const pw = prompt("請輸入管理員密碼：");
-      if (pw === "Kwai121204") {
-        adminLoggedIn = true;
-        document.getElementById("adminPanel").style.display = "block";
-        document.getElementById("adminBtn").textContent = "登出管理層雲端";
-        updateAdminSeatDetails();
-      } else {
-        alert("密碼錯誤！");
-      }
+    const pw = prompt("請輸入管理員密碼：");
+    if (pw === "Kwai121204") {
+      document.getElementById("adminPanel").style.display = "block";
+      updateAdminSeatDetails();
     } else {
-      adminLoggedIn = false;
-      document.getElementById("adminPanel").style.display = "none";
-      document.getElementById("adminBtn").textContent = "管理員登入";
+      alert("密碼錯誤！");
     }
   }
 
@@ -217,31 +236,3 @@
 </script>
 </body>
 </html>
-
-<style>
-@media (max-width: 480px) {
-  .seating-area {
-    flex-direction: column;
-    align-items: center;
-  }
-  .section {
-    min-width: unset;
-    width: 100%;
-  }
-}
-</style>
-
-
-<style>
-/* Landscape fix */
-@media (orientation: landscape) and (max-height: 500px) {
-  .seating-area {
-    flex-direction: row;
-    overflow-x: auto;
-  }
-  .section {
-    min-width: 220px;
-    flex-shrink: 0;
-  }
-}
-</style>
